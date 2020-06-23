@@ -1,7 +1,7 @@
 # jpa-h2-relation-own-JpaMethods
 Simple JPA H2 impl with own JPA relations + Custom JPA methods
 
-### TeacherDAO interface extra methods
+### 1 TeacherDAO interface extra methods
 
 ```java
 public interface TeacherDAO extends JpaRepository<Teacher, Integer>{
@@ -17,7 +17,7 @@ public interface TeacherDAO extends JpaRepository<Teacher, Integer>{
 ```
 
 
-### application.properties
+### 2 application.properties
 	#h2
 	spring.datasource.url=jdbc:h2:mem:h2db
 	spring.h2.console.enabled=true
