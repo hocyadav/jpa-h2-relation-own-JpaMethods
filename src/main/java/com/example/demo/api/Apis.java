@@ -1,70 +1,80 @@
 package com.example.demo.api;
 
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dao.StudentDAO;
-import com.example.demo.dao.SubjectDAO;
-import com.example.demo.model.Student;
-import com.example.demo.model.Subject;
+import com.example.demo.dao.ClassDAO;
+import com.example.demo.dao.TeacherDAO;
+import com.example.demo.model.Class_;
+import com.example.demo.model.Teacher;
 
 @RestController
-@RequestMapping("/st")
+@RequestMapping("/class")
 public class Apis {
 
 	@Autowired
-	StudentDAO studentDAO;
+	ClassDAO classDao;
 	
 	@Autowired
-	SubjectDAO subjectDAO;
+	TeacherDAO teacherDAO;
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public List<Student> getAll() {
-		return studentDAO.findAll();
+	public List<Class_> getAll() {
+		return classDao.findAll();
 	}
 	
-	//working - add empty list - by default
-//	@RequestMapping(method = RequestMethod.POST)
-//	public void saveStudent(@RequestBody Student student) {
-//		studentDAO.save(student);
-//	}
-	
-	//working -we are creating -> adding into db - adding into list -> then adding into curent new objct
 	@RequestMapping(method = RequestMethod.POST)
-	public void saveStudent(@RequestBody Student student) {
-		Random r = new Random();
-		List<Subject> list = new LinkedList<Subject>();
+	public void saveStudent(@RequestBody Class_ class_) {
+		Set<Teacher> tset = new HashSet();
 		
-		Subject s = new Subject();
-		s.setName("physics"+r.nextInt());
-		subjectDAO.save(s);
-		list.add(s);
+		Teacher t = new Teacher();
+		t.setSubject("maths");
+		t.setTname("jitendra sir");
 		
-		Subject s2 = new Subject();
-		s2.setName("physics"+r.nextInt());
-		subjectDAO.save(s2);
-		list.add(s2);
+		teacherDAO.save(t);
+		tset.add(t);
 		
-		student.setSub_list(list);
-		studentDAO.save(student);
-	}
-
-	
-	@RequestMapping(value = "/su", method = RequestMethod.GET)
-	public List<Subject> getAllSubh() {
-		return subjectDAO.findAll();
+		class_.setTeachers(tset);
+		
+		classDao.save(class_);
 	}
 	
-	@RequestMapping(value = "/su", method = RequestMethod.POST)
-	public void saveSubj(@RequestBody Subject subject) {
-		subjectDAO.save(subject);
+	@RequestMapping(value = "/te", method = RequestMethod.GET)
+	public List<Teacher> getAllSubh() {
+		return teacherDAO.findAll();
+	}
+	
+	//all working
+	@RequestMapping(value = "/te/{subj}", method = RequestMethod.GET)
+	public List<Teacher> getByMaths(@PathVariable("subj") String subj) {
+		//return teacherDAO.findBySubject(subj);//Maths, Physics
+		//return teacherDAO.findBySubjectIgnoreCase(subj);//Maths/maths, Physics/physics
+		//return teacherDAO.findBySubjectContaining(subj);//Mat, Phy
+		return teacherDAO.findBySubjectIgnoreCaseContaining(subj);//mat, phy
+		
+		//return teacherDAO.findByTnameIgnoreCaseContaining(subj);
+	}
+	
+	
+	@RequestMapping(value = "/te", method = RequestMethod.POST)
+	public void saveSubj(@RequestBody Teacher tea_) {
+		Set<Class_> cset = new HashSet();
+		
+		Class_ c = new Class_();
+		c.setCname("eng class");
+		classDao.save(c);
+		
+		cset.add(c);
+		
+		teacherDAO.save(tea_);
 	}
 	
 }
